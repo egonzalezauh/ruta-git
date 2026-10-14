@@ -1,0 +1,144 @@
+@import '@fontsource/barlow-condensed/600.css';
+@import '@fontsource/barlow-condensed/700.css';
+@import '@fontsource/barlow-condensed/800.css';
+@import '@fontsource/atkinson-hyperlegible-next/400.css';
+@import '@fontsource/atkinson-hyperlegible-next/500.css';
+@import '@fontsource/atkinson-hyperlegible-next/700.css';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/500.css';
+@import 'tailwindcss';
+
+/*
+  Ruta Git — sistema visual
+  Idea: Git es un mapa de metro. Las ramas son líneas, los commits son estaciones,
+  una fusión es un transbordo y "HEAD" es el cartel "Estás aquí".
+*/
+@theme {
+  --font-display: 'Barlow Condensed', 'Arial Narrow', system-ui, sans-serif;
+  --font-body: 'Atkinson Hyperlegible Next', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
+
+  --color-paper: #eef1f7;
+  --color-card: #ffffff;
+  --color-ink: #0e1630;
+  --color-ink-soft: #424c6b;
+  --color-ink-faint: #6f7893;
+  --color-rule: #d5dae8;
+  --color-wash: #e4e9f4;
+
+  --color-line-main: #2447f5;
+  --color-line-1: #f0541e;
+  --color-line-2: #0d9a78;
+  --color-line-3: #d99a00;
+  --color-line-4: #9b4de8;
+  --color-line-5: #dc2f86;
+
+  --color-term: #0c1329;
+  --color-term-2: #161f3d;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-line-main);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Cartel de estación: la firma tipográfica del curso */
+.sign {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.005em;
+  line-height: 0.95;
+}
+
+/* Comando en línea dentro del texto */
+.cmd {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  font-weight: 500;
+  background: var(--color-wash);
+  color: var(--color-ink);
+  padding: 0.12em 0.45em;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+/* Término del glosario con explicación al pasar el mouse o enfocar */
+.term {
+  position: relative;
+  border-bottom: 2px dotted var(--color-line-main);
+  cursor: help;
+  font-weight: 500;
+}
+.term::after {
+  content: attr(data-def);
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 260px;
+  padding: 8px 11px;
+  border-radius: 10px;
+  background: var(--color-ink);
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 400;
+  line-height: 1.4;
+  white-space: normal;
+  text-align: left;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s ease;
+  z-index: 30;
+}
+.term:hover::after,
+.term:focus-visible::after {
+  opacity: 1;
+}
+
+/* Barra de desplazamiento discreta */
+.slim-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-rule) transparent;
+}
+.term-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #2a3560 transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,24 @@
+# Dependencias (se reinstalan con npm install)
+node_modules/
+
+# Versión lista para publicar (se regenera con npm run build)
+dist/
+
+# Archivos del sistema y del editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Variables de entorno y claves: nunca se suben
+.env
+.env.*
+*.local
+
+# Registros y cachés
+*.log
+.vite/
+.cache/
+
+# Configuración local de Claude Code
+.claude/
