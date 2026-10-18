@@ -244,9 +244,10 @@ interface Props {
   stars: Record<number, number>;
   onOpen: (id: number) => void;
   onResetProgress: () => void;
+  onCommands: () => void;
 }
 
-export function Home({ completed, stars, onOpen, onResetProgress }: Props) {
+export function Home({ completed, stars, onOpen, onResetProgress, onCommands }: Props) {
   const lessons = ROUTE.filter((c) => c.kind === 'lesson');
   const missions = ROUTE.filter((c) => c.kind === 'mission');
   const firstPending = ROUTE.find((c) => isReady(c.id) && !completed.includes(c.id));
@@ -336,6 +337,28 @@ export function Home({ completed, stars, onOpen, onResetProgress }: Props) {
             color="var(--color-line-1)"
             label={(c) => `M${c.id - 10}`}
           />
+        </div>
+      </section>
+
+      <section className="pt-16" aria-labelledby="comandos-titulo">
+        <div className="flex flex-wrap items-center justify-between gap-5 rounded-3xl bg-ink px-6 py-7 text-white sm:px-8">
+          <div className="max-w-xl">
+            <p className="sign text-[14px] text-white/60">Guía de consulta</p>
+            <h2 id="comandos-titulo" className="display mt-1 text-[40px]">
+              Todos los comandos en un solo lugar
+            </h2>
+            <p className="mt-2 text-[16.5px] text-white/75">
+              Una lista ordenada por tipo: qué hace cada comando, cuándo usarlo y por dónde viajan tus cambios.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onCommands}
+            className="inline-flex items-center gap-2.5 rounded-2xl bg-white px-6 py-3.5 text-[17px] font-bold text-ink transition-transform hover:-translate-y-0.5"
+          >
+            Ver los comandos
+            <ArrowIcon size={18} />
+          </button>
         </div>
       </section>
 

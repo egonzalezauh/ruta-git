@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { getChapter, getMission, isReady, ROUTE } from './course';
+import { CommandsView } from './components/CommandsView';
 import { Header } from './components/Header';
 import { Home } from './components/Home';
 import { LessonView } from './components/LessonView';
@@ -16,18 +17,28 @@ function parse(hash: string): number | null {
 
 const hashFor = (id: number) => `#/${ROUTE.find((c) => c.id === id)?.kind === 'mission' ? 'mision' : 'parada'}/${id}`;
 
+const COMMANDS_HASH = '#/comandos';
+
 export function App() {
-  const [routeId, setRouteId] = useState<number | null>(() => parse(window.location.hash));
+  const [hash, setHash] = useState(() => window.location.hash);
   const { completed, stars, complete, reset } = useProgress();
 
   useEffect(() => {
-    const onHash = () => setRouteId(parse(window.location.hash));
+    const onHash = () => setHash(window.location.hash);
     window.addEventListener('hashchange', onHash);
     return () => window.removeEventListener('hashchange', onHash);
   }, []);
 
+  const routeId = parse(hash);
+  const showCommands = hash === COMMANDS_HASH;
+
   const go = useCallback((id: number | null) => {
     window.location.hash = id === null ? '#/' : hashFor(id);
+    window.scrollTo({ top: 0 });
+  }, []);
+
+  const goCommands = useCallback(() => {
+    window.location.hash = COMMANDS_HASH;
     window.scrollTo({ top: 0 });
   }, []);
 
@@ -38,18 +49,29 @@ export function App() {
   const hasNext = !!nextMeta && isReady(nextMeta.id);
 
   useEffect(() => {
-    document.title = lesson
-      ? `Parada ${lesson.id}: ${lesson.title} · Ruta Git`
-      : mission
-        ? `Misión ${mission.id - 10}: ${mission.title} · Ruta Git`
-        : 'Ruta Git';
-  }, [lesson, mission]);
+    document.title = showCommands
+      ? 'Comandos de Git · Ruta Git'
+      : lesson
+        ? `Parada ${lesson.id}: ${lesson.title} · Ruta Git`
+        : mission
+          ? `Misión ${mission.id - 10}: ${mission.title} · Ruta Git`
+          : 'Ruta Git';
+  }, [lesson, mission, showCommands]);
 
   return (
     // En la lección (pantallas grandes) todo cabe en la ventana y cada panel hace su propio scroll.
-    <div className={`flex min-h-full flex-col ${current ? 'lg:h-full' : ''}`}>
-      <Header current={current?.id ?? null} completed={completed} onGo={go} onHome={() => go(null)} />
-      {lesson ? (
+    <div className={`flex min-h-full flex-col ${current && !showCommands ? 'lg:h-full' : ''}`}>
+      <Header
+        current={showCommands ? null : (current?.id ?? null)}
+        completed={completed}
+        onGo={go}
+        onHome={() => go(null)}
+        onCommands={goCommands}
+        commandsOpen={showCommands}
+      />
+      {showCommands ? (
+        <CommandsView onHome={() => go(null)} />
+      ) : lesson ? (
         <LessonView
           key={lesson.id}
           chapter={lesson}
@@ -70,7 +92,7 @@ export function App() {
           onHome={() => go(null)}
         />
       ) : (
-        <Home completed={completed} stars={stars} onOpen={go} onResetProgress={reset} />
+        <Home completed={completed} stars={stars} onOpen={go} onResetProgress={reset} onCommands={goCommands} />
       )}
     </div>
   );

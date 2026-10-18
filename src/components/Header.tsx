@@ -6,11 +6,13 @@ interface Props {
   completed: number[];
   onGo: (id: number) => void;
   onHome: () => void;
+  onCommands: () => void;
+  commandsOpen: boolean;
 }
 
 const stationLabel = (id: number, kind: string) => (kind === 'mission' ? `M${id - 10}` : String(id));
 
-export function Header({ current, completed, onGo, onHome }: Props) {
+export function Header({ current, completed, onGo, onHome, onCommands, commandsOpen }: Props) {
   return (
     <header className="flex h-16 shrink-0 items-center gap-4 border-b border-rule bg-card px-4 sm:px-5">
       <button type="button" onClick={onHome} className="flex shrink-0 items-center gap-2.5" aria-label="Ir al inicio">
@@ -77,7 +79,17 @@ export function Header({ current, completed, onGo, onHome }: Props) {
         <p className="sign hidden text-[13px] text-ink-soft sm:block">
           {completed.length} de {ROUTE.length} completadas
         </p>
-        {current !== null && (
+        <button
+          type="button"
+          onClick={onCommands}
+          aria-current={commandsOpen ? 'page' : undefined}
+          className={`rounded-lg border px-3 py-1.5 text-[14px] font-medium ${
+            commandsOpen ? 'border-ink bg-ink text-white' : 'border-rule text-ink hover:bg-wash'
+          }`}
+        >
+          Comandos
+        </button>
+        {(current !== null || commandsOpen) && (
           <button
             type="button"
             onClick={onHome}
